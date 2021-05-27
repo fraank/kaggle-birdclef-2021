@@ -5,6 +5,7 @@ import pandas as pd
 import torch
 import math
 import os
+import librosa
 from dataloaders.imbalanced_dataset_sampler import ImbalancedDatasetSampler
 
 class SedDataset(Dataset):
@@ -76,7 +77,9 @@ class SedDataset(Dataset):
         # ogg reading should not be a problem for 
         # https://pysoundfile.readthedocs.io/en/latest/
         # need to convert from stereo to mono
-        y, sr = sf.read(file_dir, channels=1)
+        # this is not supported by pysoundfile for non RAW files
+        #y, sr = sf.read(file_dir, channels=1)
+        y, sr = librosa.load(file_dir, mono=True)
         return {
             "y": y, 
             "all_labels":all_labels, 
