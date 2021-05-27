@@ -78,10 +78,10 @@ class SedDataset(Dataset):
         # https://pysoundfile.readthedocs.io/en/latest/
         # need to convert from stereo to mono
         # this is not supported by pysoundfile for non RAW files
-        y, sr = sf.read(file_dir)
+        # y, sr = sf.read(file_dir) # original
         # tryout convert to stereo
-        y = np.array([y, y])
-        #y, sr = librosa.load(file_dir, mono=True)
+        y, sr = librosa.load(file_dir, mono=True, sr=32000)
+        #y = librosa.to_mono(y)
         return {
             "y": y, 
             "all_labels":all_labels, 
