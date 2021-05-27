@@ -91,7 +91,7 @@ class ConvolutionalBlockAttentionModule(nn.Module):
 
 
 class AUXDense161(torch.nn.Module):
-    def __init__(self, base_size=64, last_fc=2, num_classes=264, dropout=0.2, ratio=16, kernel_size=7, last_filters=8):
+    def __init__(self, base_size=64, last_fc=2, num_classes=397, dropout=0.2, ratio=16, kernel_size=7, last_filters=8):
         super(AUXDense161, self).__init__()
         features = list(densenet161(pretrained = True).features)
         self.features = nn.ModuleList(features)

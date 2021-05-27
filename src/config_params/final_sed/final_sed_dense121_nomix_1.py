@@ -19,7 +19,7 @@ class Parameters(object):
             "mel_bins": 64,
             "fmin": 50,
             "fmax": 14000,
-            "classes_num": 264,
+            "classes_num": 397,
             "apply_aug": True,
             "top_db": None
         }
