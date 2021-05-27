@@ -26,7 +26,7 @@ class SedDataset(Dataset):
         
         df = pd.read_csv(csv_dir)
         df.secondary_labels = df.secondary_labels.apply(eval)
-        self.data = list(df[["filename", "ebird_code", "secondary_labels"]].to_dict('index').values())
+        self.data = list(df[["filename", "primary_label", "secondary_labels"]].to_dict('index').values())
         del df
         
         self.background_audio_dir = background_audio_dir
@@ -43,7 +43,7 @@ class SedDataset(Dataset):
         self.length = len(self.data)
     
     def get_label(self, dataset, idx):
-        return dataset.data[idx]["ebird_code"]
+        return dataset.data[idx]["primary_label"]
 
     def __len__(self):
         return self.length
@@ -55,8 +55,8 @@ class SedDataset(Dataset):
     def get_audio(self, idx):
         item = self.data[idx]
         filename = item["filename"]
-        if "ebird_code" in item:
-            primary_label = item["ebird_code"]
+        if "primary_label" in item:
+            primary_label = item["primary_label"]
 
             all_labels = [primary_label]
             for ln in item["secondary_labels"]:

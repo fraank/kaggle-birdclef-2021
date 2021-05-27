@@ -24,7 +24,7 @@ class AudioDatasetV2(Dataset):
         self.conf = conf
         self.num_splits = num_splits
         self.isTraining = isTraining
-        self.apply_mixer = apply_mixer
+        self.apply_mixer = apply_mixerz
         self.bird_code = bird_code
         self.inv_ebird_label = inv_ebird_label
 
@@ -44,23 +44,23 @@ class AudioDatasetV2(Dataset):
             del df_xeno
 
         if self.apply_mixer:
-            ebird_counts = df.groupby("ebird_code").agg(len)
+            ebird_counts = df.groupby("primary_label").agg(len)
             ebird_counts["ratio"] = (len(df)-ebird_counts["filename"])/len(df)
             ebird_counts["prob"] = ebird_counts["ratio"]/ebird_counts["ratio"].sum()
             ebird_counts_dict = ebird_counts["prob"].to_dict()
             self.label_values, self.label_probs = list(ebird_counts_dict.keys()), list(ebird_counts_dict.values())
             self.dict_grp = {}
-            for grp, d in df.groupby("ebird_code"):
+            for grp, d in df.groupby("primary_label"):
                 self.dict_grp[grp] = d.index.values
 
-        self.data = list(df[["filename", "ebird_code", "secondary_labels", "xeno_source"]].to_dict('index').values())
+        self.data = list(df[["filename", "primary_label", "secondary_labels", "xeno_source"]].to_dict('index').values())
         
         self.background_audio_dir = background_audio_dir
         if self.background_audio_dir is not None:
             for bk in background_audio_dir.glob('**/*.wav'):
                 self.data.append({
                     "filename": bk,
-                    "ebird_code": None
+                    "primary_label": None
                 })
         
         self.length = len(self.data)
@@ -69,7 +69,7 @@ class AudioDatasetV2(Dataset):
         self.selection_index = list(range(0,5*self.conf.sampling_rate,self.conf.sampling_rate))
 
     def get_label(self, dataset, idx):
-        return dataset.data[idx]["ebird_code"]
+        return dataset.data[idx]["primary_label"]
 
     def init_workers_fn(self, worker_id):
         new_seed = int.from_bytes(os.urandom(4), byteorder='little')
@@ -100,9 +100,9 @@ class AudioDatasetV2(Dataset):
     def get_audio(self, idx):
         item = self.data[idx]
         filename = item["filename"]
-        if item["ebird_code"] is not None:
+        if item["primary_label"] is not None:
             is_xeno = item["xeno_source"]
-            label = item["ebird_code"]
+            label = item["primary_label"]
             label_names = item["secondary_labels"]
         
             added_label_codes = []

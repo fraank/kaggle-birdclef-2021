@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 class AudioDataset(Dataset):
     def __init__(self, root_dir, csv_dir, conf, bird_code, mem_size=32, file_type="mp3", num_splits=5, apply_mix_aug = False, isTraining=True, transform=None):
         self.root_dir = root_dir
-        self.data = list(pd.read_csv(csv_dir)[["filename", "ebird_code"]].to_dict('index').values())
+        self.data = list(pd.read_csv(csv_dir)[["filename", "primary_label"]].to_dict('index').values())
         self.transform = transform
         self.conf = conf
         self.num_splits = num_splits
@@ -35,7 +35,7 @@ class AudioDataset(Dataset):
         self.sampler = ImbalancedDatasetSampler
 
     def get_label(self, dataset, idx):
-        return dataset.data[idx]["ebird_code"]
+        return dataset.data[idx]["primary_label"]
 
     def init_workers_fn(self, worker_id):
         new_seed = int.from_bytes(os.urandom(4), byteorder='little')
@@ -77,7 +77,7 @@ class AudioDataset(Dataset):
 
     def __getitem__(self, idx):
         item = self.data[idx]
-        label = item["ebird_code"]
+        label = item["primary_label"]
         filename = item["filename"]
         
         if self.file_type=="mp3":

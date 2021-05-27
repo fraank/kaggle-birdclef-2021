@@ -34,7 +34,7 @@ class AudioDatasetV4(Dataset):
         
         df = pd.read_csv(csv_dir)
         df.secondary_labels = df.secondary_labels.apply(eval)
-        self.data = list(df[["filename", "ebird_code", "secondary_labels"]].to_dict('index').values())
+        self.data = list(df[["filename", "primary_label", "secondary_labels"]].to_dict('index').values())
         
         self.background_audio_dir = background_audio_dir
         if self.background_audio_dir is not None:
@@ -49,7 +49,7 @@ class AudioDatasetV4(Dataset):
         
         if self.apply_mixer:
             self.dict_grp = {}
-            for grp, d in df.groupby("ebird_code"):
+            for grp, d in df.groupby("primary_label"):
                 self.dict_grp[grp] = d.index.values
             self.possible_mixer_keys = list(self.dict_grp.keys())
             
@@ -69,7 +69,7 @@ class AudioDatasetV4(Dataset):
         del df
 
     def get_label(self, dataset, idx):
-        return dataset.data[idx]["ebird_code"]
+        return dataset.data[idx]["primary_label"]
 
     def init_workers_fn(self, worker_id):
         new_seed = int.from_bytes(os.urandom(4), byteorder='little')
@@ -91,8 +91,8 @@ class AudioDatasetV4(Dataset):
     def get_audio(self, idx):
         item = self.data[idx]
         filename = item["filename"]
-        if "ebird_code" in item:
-            primary_label = item["ebird_code"]
+        if "primary_label" in item:
+            primary_label = item["primary_label"]
 
             all_labels = [primary_label]
             for ln in item["secondary_labels"]:
