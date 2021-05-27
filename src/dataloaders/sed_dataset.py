@@ -9,7 +9,7 @@ from dataloaders.imbalanced_dataset_sampler import ImbalancedDatasetSampler
 
 class SedDataset(Dataset):
     def __init__( self,
-            root_dir, csv_dir, period, bird_code, inv_ebird_label, isTraining,num_test_samples, transform=None, background_audio_dir=None):
+            root_dir, csv_dir, period, bird_code, inv_ebird_label, isTraining, num_test_samples, transform=None, background_audio_dir=None):
 
         self.root_dir = root_dir
         self.transform = transform
@@ -75,7 +75,8 @@ class SedDataset(Dataset):
         
         # ogg reading should not be a problem for 
         # https://pysoundfile.readthedocs.io/en/latest/
-        y, sr = sf.read(file_dir)
+        # need to convert from stereo to mono
+        y, sr = sf.read(file_dir, channels=1)
         return {
             "y": y, 
             "all_labels":all_labels, 
