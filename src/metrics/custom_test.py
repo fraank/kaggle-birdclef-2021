@@ -42,7 +42,7 @@ class CustomTest(Metric):
         for i in range(len(pred)):
             p = pred[i]
             t = target[i]
-            filename = filenames[i].replace(".mp3","")
+            filename = filenames[i].replace(".ogg","")
             score = label_ranking_average_precision_score([t], [p])
             solution = {
                 "predicted": p,

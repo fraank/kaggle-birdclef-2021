@@ -64,15 +64,17 @@ class SedDataset(Dataset):
                     all_labels.append(self.inv_ebird_label[ln])
 
             if type(self.root_dir) is dict:
-                file_dir = self.root_dir[primary_label[0]]/f"{primary_label}"/f"{filename.replace('.mp3','.wav')}"
+                file_dir = self.root_dir[primary_label[0]]/f"{primary_label}"/f"{filename}"
             else:
-                file_dir = self.root_dir/f"{primary_label}"/f"{filename.replace('.mp3','.wav')}"
+                file_dir = self.root_dir/f"{primary_label}"/f"{filename}"
         else:
             primary_label = None
             all_labels = []
             file_dir = filename
             filename = filename.stem
-
+        
+        # ogg reading should not be a problem for 
+        # https://pysoundfile.readthedocs.io/en/latest/
         y, sr = sf.read(file_dir)
         return {
             "y": y, 

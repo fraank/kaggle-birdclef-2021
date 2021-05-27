@@ -15,7 +15,7 @@ from dataloaders.imbalanced_dataset_sampler import ImbalancedDatasetSampler
 warnings.filterwarnings("ignore")
 
 class AudioDatasetV3(Dataset):
-    def __init__(self, root_dir, csv_dir, conf, bird_code, inv_ebird_label, background_audio_dir=None, xeno_csv=None, xeno_dir=None, file_type="mp3", num_splits=5, apply_mixer = False, isTraining=True, transform=None):
+    def __init__(self, root_dir, csv_dir, conf, bird_code, inv_ebird_label, background_audio_dir=None, xeno_csv=None, xeno_dir=None, file_type="ogg", num_splits=5, apply_mixer = False, isTraining=True, transform=None):
         self.root_dir = root_dir
         df = pd.read_csv(csv_dir)
         df.secondary_labels = df.secondary_labels.apply(eval)
@@ -110,13 +110,7 @@ class AudioDatasetV3(Dataset):
 
             labels = added_label_codes+ [label]
         
-            if self.file_type=="mp3":
-                file_dir = self.root_dir/f"{label}"/f"{filename}"
-            else:
-                if is_xeno == False:
-                    file_dir = self.root_dir[label[0]]/f"{label}"/f"{filename.replace('.mp3','.wav')}"
-                else:
-                    file_dir = self.xeno_dir/f"{label}"/f"{filename.replace('.mp3','.wav')}"
+            file_dir = self.root_dir/f"{label}"/f"{filename}"
         else:
             labels = []
             file_dir = filename

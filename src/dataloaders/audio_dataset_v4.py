@@ -17,7 +17,7 @@ from dataloaders.imbalanced_dataset_sampler import ImbalancedDatasetSampler
 warnings.filterwarnings("ignore")
 
 class AudioDatasetV4(Dataset):
-    def __init__(self, root_dir, csv_dir, conf, bird_code,inv_ebird_label, num_test_samples=10, bckgrd_aug_dir=None, background_audio_dir=None, file_type="mp3", isTraining=True, transform=None, apply_mixer=False):
+    def __init__(self, root_dir, csv_dir, conf, bird_code,inv_ebird_label, num_test_samples=10, bckgrd_aug_dir=None, background_audio_dir=None, file_type="ogg", isTraining=True, transform=None, apply_mixer=False):
         self.root_dir = root_dir
         self.conf = conf
         self.isTraining = isTraining
@@ -99,13 +99,7 @@ class AudioDatasetV4(Dataset):
                 if ln in self.inv_ebird_label:
                     all_labels.append(self.inv_ebird_label[ln])
 
-            if self.file_type=="mp3":
-                file_dir = self.root_dir/f"{primary_label}"/f"{filename}"
-            else:
-                if type(self.root_dir) is dict:
-                    file_dir = self.root_dir[primary_label[0]]/f"{primary_label}"/f"{filename.replace('.mp3','.wav')}"
-                else:
-                    file_dir = self.root_dir/f"{primary_label}"/f"{filename.replace('.mp3','.wav')}"
+            file_dir = self.root_dir/f"{primary_label}"/f"{filename}"
         else:
             primary_label = None
             all_labels = []

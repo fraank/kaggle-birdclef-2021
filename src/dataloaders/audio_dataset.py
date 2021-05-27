@@ -15,7 +15,7 @@ from dataloaders.imbalanced_dataset_sampler import ImbalancedDatasetSampler
 warnings.filterwarnings("ignore")
 
 class AudioDataset(Dataset):
-    def __init__(self, root_dir, csv_dir, conf, bird_code, mem_size=32, file_type="mp3", num_splits=5, apply_mix_aug = False, isTraining=True, transform=None):
+    def __init__(self, root_dir, csv_dir, conf, bird_code, mem_size=32, file_type="ogg", num_splits=5, apply_mix_aug = False, isTraining=True, transform=None):
         self.root_dir = root_dir
         self.data = list(pd.read_csv(csv_dir)[["filename", "primary_label"]].to_dict('index').values())
         self.transform = transform
@@ -80,10 +80,7 @@ class AudioDataset(Dataset):
         label = item["primary_label"]
         filename = item["filename"]
         
-        if self.file_type=="mp3":
-            file_dir = self.root_dir/f"{label}"/f"{filename}"
-        else:
-            file_dir = self.root_dir[label[0]]/f"{label}"/f"{filename.replace('.mp3','.wav')}"
+        file_dir = self.root_dir[label[0]]/f"{label}"/f"{filename}"
             
             
         y, duration = read_audio(file_dir, self.conf)
